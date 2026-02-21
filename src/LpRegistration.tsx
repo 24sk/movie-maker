@@ -1,5 +1,6 @@
 import { AbsoluteFill, Sequence, Video, useVideoConfig, staticFile } from 'remotion';
 import { Audio } from '@remotion/media';
+import { Character } from './Character';
 import { Telop } from './Telop';
 import { TitleSequence } from './TitleSequence';
 import { lpRegistrationTelopData } from './data/lp-registration-telop';
@@ -21,15 +22,24 @@ export const LpRegistration: React.FC = () => {
             <Sequence from={2 * fps}>
                 <Video src={VIDEO_SRC} startFrom={0} />
 
-                {/* 各テロップの開始時間に合わせて音声を配置 */}
-                {lpRegistrationTelopData.map((item, index) => (
-                    <Sequence
-                        key={index}
-                        from={(item.startMs / 1000) * fps}
-                    >
-                        <Audio src={staticFile(`voiceover/lp-registration/${index}.mp3`)} />
-                    </Sequence>
-                ))}
+                {/* 各テロップの開始時間に合わせてカスタムボイス音声とキャラクターを配置 */}
+                {lpRegistrationTelopData.map((item, index) => {
+                    const durationFrames = ((item.endMs - item.startMs) / 1000) * fps;
+                    const voiceoverSrc = staticFile(`voiceover/lp-registration/${index}.mp3`);
+                    return (
+                        <Sequence
+                            key={index}
+                            from={(item.startMs / 1000) * fps}
+                            durationInFrames={durationFrames}
+                        >
+                            <Audio src={voiceoverSrc} />
+                            <Character
+                                audioSrc={voiceoverSrc}
+                                startFromFrame={0}
+                            />
+                        </Sequence>
+                    );
+                })}
 
                 {/* テロップ表示レイヤー */}
                 <Sequence from={0} durationInFrames={122 * fps}>

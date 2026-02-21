@@ -2,39 +2,38 @@ import "dotenv/config";
 import { FishAudioClient } from "fish-audio";
 import { writeFileSync, mkdirSync, existsSync } from "fs";
 import path from "path";
+import type { TelopItem } from "../src/Telop";
 import { lpRegistrationTelopData } from "../src/data/lp-registration-telop";
+import { productRegistrationTelopData } from "../src/data/product-registration-telop";
+import { lpCheckTelopData } from "../src/data/lp-check-telop";
+
+const REFERENCE_ID = "063a9b872ba2468b86ff9b041880e13a";
 
 // テロップデータのテキストから **強調** を除去する関数
 const cleanText = (text: string) => text.replace(/\*\*/g, "");
 
-const generate = async () => {
-  const apiKey = process.env.FISH_API_KEY;
-  if (!apiKey) {
-    throw new Error("FISH_API_KEY が環境変数に設定されていません。.env ファイルを確認してください。");
-  }
-
-  const client = new FishAudioClient({ apiKey });
-  const outputDir = path.join(process.cwd(), "public/voiceover/lp-registration");
-
+const generateForTarget = async (
+  client: FishAudioClient,
+  telopData: TelopItem[],
+  outputDir: string,
+  label: string
+) => {
   if (!existsSync(outputDir)) {
     mkdirSync(outputDir, { recursive: true });
   }
 
-  console.log("Generating audio files...");
+  console.log(`\n[${label}] Generating ${telopData.length} audio files...`);
 
-  for (let i = 0; i < lpRegistrationTelopData.length; i++) {
-    const item = lpRegistrationTelopData[i];
+  for (let i = 0; i < telopData.length; i++) {
+    const item = telopData[i];
     const text = cleanText(item.text);
 
-    // Fish Audio APIで音声を生成
     const audioStream = await client.textToSpeech.convert({
       text,
       format: "mp3",
-      // カスタムボイスを使用する場合は reference_id を指定
-      reference_id: "063a9b872ba2468b86ff9b041880e13a"
+      reference_id: REFERENCE_ID,
     });
 
-    // ReadableStream を Buffer に変換
     const reader = audioStream.getReader();
     const chunks: Uint8Array[] = [];
     while (true) {
@@ -45,10 +44,41 @@ const generate = async () => {
     const buffer = Buffer.concat(chunks);
 
     writeFileSync(path.join(outputDir, `${i}.mp3`), buffer);
-    console.log(`✓ Generated: ${i}.mp3 (${text})`);
+    console.log(`  ✓ ${i}.mp3 (${text})`);
+  }
+};
+
+const generate = async () => {
+  const apiKey = process.env.FISH_API_KEY;
+  if (!apiKey) {
+    throw new Error("FISH_API_KEY が環境変数に設定されていません。.env ファイルを確認してください。");
   }
 
-  console.log(`\n完了: ${lpRegistrationTelopData.length} ファイルを ${outputDir} に保存しました。`);
+  const client = new FishAudioClient({ apiKey });
+  const publicDir = path.join(process.cwd(), "public/voiceover");
+
+  await generateForTarget(
+    client,
+    productRegistrationTelopData,
+    path.join(publicDir, "product-registration"),
+    "ProductRegistration"
+  );
+
+  await generateForTarget(
+    client,
+    lpRegistrationTelopData,
+    path.join(publicDir, "lp-registration"),
+    "LpRegistration"
+  );
+
+  await generateForTarget(
+    client,
+    lpCheckTelopData,
+    path.join(publicDir, "lp-check"),
+    "LpCheck"
+  );
+
+  console.log("\n✅ 全ての音声生成が完了しました。");
 };
 
 generate().catch((err) => {

@@ -16,6 +16,7 @@
   "dependencies": {
     "@remotion/cli": "^4.0.427",
     "@remotion/media": "^4.0.427",
+    "@remotion/media-utils": "^4.0.427",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "fish-audio": "^0.0.3",
