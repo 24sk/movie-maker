@@ -6,7 +6,8 @@
   "scripts": {
     "start": "remotion studio",
     "build": "remotion render HelloWorld out/video.mp4",
-    "build:product": "remotion render ProductRegistration out/product_registration.mp4"
+    "build:product": "remotion render ProductRegistration out/product_registration.mp4",
+    "generate-voiceover": "tsx scripts/generate-voiceover.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,10 +18,15 @@
     "@remotion/media": "^4.0.427",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "fish-audio": "^0.0.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "remotion": "^4.0.427",
     "typescript": "^5.9.3",
     "tz-lookup": "^6.1.25"
+  },
+  "devDependencies": {
+    "dotenv": "^17.3.1",
+    "tsx": "^4.21.0"
   }
 }
