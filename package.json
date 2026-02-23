@@ -7,6 +7,7 @@
     "start": "remotion studio",
     "build": "remotion render HelloWorld out/video.mp4",
     "build:product": "remotion render ProductRegistration out/product_registration.mp4",
+    "build:chatgpt": "remotion render ChatGPTVideo out/chatgpt.mp4",
     "generate-voiceover": "tsx scripts/generate-voiceover.ts"
   },
   "keywords": [],

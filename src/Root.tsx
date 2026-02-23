@@ -3,6 +3,7 @@ import { Composition } from "remotion";
 import { ProductRegistration } from "./ProductRegistration";
 import { LpRegistration } from "./LpRegistration";
 import { LpCheck } from "./LpCheck";
+import { ChatGPTVideo } from "./ChatGPTVideo";
 
 const helloWorldElement = (
   <div style={{ flex: 1, justifyContent: "center", alignItems: "center", display: "flex", backgroundColor: "white" }}>
@@ -45,6 +46,14 @@ export const RemotionRoot: React.FC = () => {
         id="LpCheck"
         component={LpCheck}
         durationInFrames={Math.ceil(230.686667 * 30) + 60} // 230.68秒 * 30fps + タイトル2秒(60フレーム)
+        fps={30}
+        width={1256}
+        height={1268}
+      />
+      <Composition
+        id="ChatGPTVideo"
+        component={ChatGPTVideo}
+        durationInFrames={Math.ceil(92.0 * 30) + 60} // chatgpt.mp4の長さ+2秒 （テロップでは92秒まで）
         fps={30}
         width={1256}
         height={1268}

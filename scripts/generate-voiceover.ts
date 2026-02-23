@@ -6,6 +6,7 @@ import type { TelopItem } from "../src/Telop";
 import { lpRegistrationTelopData } from "../src/data/lp-registration-telop";
 import { productRegistrationTelopData } from "../src/data/product-registration-telop";
 import { lpCheckTelopData } from "../src/data/lp-check-telop";
+import { chatgptTelopData } from "../src/data/chatgpt-telop";
 
 const REFERENCE_ID = "063a9b872ba2468b86ff9b041880e13a";
 
@@ -76,6 +77,13 @@ const generate = async () => {
     lpCheckTelopData,
     path.join(publicDir, "lp-check"),
     "LpCheck"
+  );
+
+  await generateForTarget(
+    client,
+    chatgptTelopData,
+    path.join(publicDir, "chatgpt"),
+    "ChatGPT"
   );
 
   console.log("\n✅ 全ての音声生成が完了しました。");
